@@ -52,6 +52,9 @@ function renderShoppingList() {
   if (STORE.hideCompleted) {
     filteredItems = filteredItems.filter(item => !item.checked);
   }
+  if (STORE.searchInProgress) {
+      filteredItems = filteredItems.filter(item => !item.meetsSearchCritera);
+  }
 
   // at this point, all filtering work has been done (or not done, if that's the current settings), so
   // we send our `filteredItems` into our HTML generation function 
@@ -150,12 +153,17 @@ function searchForItem() {
                 //set that item's meetsSearchCriteria = true;
             //else
                 //set that item's meetsSearchCritera = false;
-        //change "searchInprogress" to true;
+        STORE.searchInProgress = true;
+        renderShoppingList();
 }
 
 function exitSearch() {
     //On button "exit search mode" clicked,
-        //change "searchInprogress" to false;
+    $('#js-search-item').on('click', '#exit-search-button', e => {
+        event.preventDefault();
+        STORE.searchInProgress = false;
+        renderShoppingList();
+    })
 }
 
 
@@ -187,6 +195,11 @@ function handleShoppingList() {
   handleItemCheckClicked();
   handleDeleteItemClicked();
   handleToggleHideFilter();
+  searchForItem();
+  exitSearch();
+  startEditItemTitle();
+  cancelEditItemTitle();
+  submitEditItemTitle();
 }
 
 // when the page loads, call `handleShoppingList`

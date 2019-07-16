@@ -53,7 +53,7 @@ function renderShoppingList() {
     filteredItems = filteredItems.filter(item => !item.checked);
   }
   if (STORE.searchInProgress) {
-      filteredItems = filteredItems.filter(item => !item.meetsSearchCritera);
+      filteredItems = filteredItems.filter(item => item.meetsSearchCritera);
   }
 
   // at this point, all filtering work has been done (or not done, if that's the current settings), so
@@ -147,15 +147,18 @@ function handleToggleHideFilter() {
 //User can type in a search term and the displayed list will be filtered by ITEM NAMES only containing that search term
 function searchForItem() {
     //On button "Search for Item" submitted
-        //Take Input
-        //Search each Item name and compare against input
-            //If item contains input
-                //set that item's meetsSearchCriteria = true;
-            //else
-                //set that item's meetsSearchCritera = false;
+    $('#js-search-item').submit(function(e) {
+        e.preventDefault();
+        const searchQuery = $('.js-search-item').val();
+        const searchable = STORE.items;
+        for (let i = 0; i < searchable.length; i++){
+            //Search each Item name and compare against input
+            let currentItem = searchable[i];
+            currentItem.meetsSearchCritera = ((currentItem.name).includes(searchQuery));
+            }
         STORE.searchInProgress = true;
         renderShoppingList();
-}
+})}
 
 function exitSearch() {
     //On button "exit search mode" clicked,
